@@ -49,11 +49,12 @@ nano .env
 ```
 
 অবশ্যই বদলান:
-- `POSTGRES_PASSWORD` — শক্ত পাসওয়ার্ড
+- `DATABASE_URL` — managed PostgreSQL (Neon) connection string
 - `JWT_SECRET` — র‍্যান্ডম স্ট্রিং (`openssl rand -base64 32` দিয়ে বানান)
-- `ADMIN_EMAIL` / `ADMIN_PASSWORD` — admin login
 - `SMTP_*` / `SELLER_EMAIL` — Gmail App Password (সাধারণ পাসওয়ার্ড না)
 - `NEXT_PUBLIC_WHATSAPP_NUMBER` — WhatsApp নম্বর (8801XXXXXXXXX ফরম্যাটে)
+
+> Admin email/password এখানে **রাখবেন না** — অ্যাপ চালু হওয়ার পর আলাদাভাবে বানাবেন (ধাপ ৬ দেখুন)।
 
 সেভ: `Ctrl+O`, `Enter`, তারপর `Ctrl+X`।
 
@@ -87,6 +88,19 @@ ufw allow 3000/tcp   # ufw চালু থাকলে
 ```bash
 docker compose logs -f app
 ```
+
+---
+
+## 5.1) Admin অ্যাকাউন্ট বানান (একবারই)
+
+Admin credential `.env`-এ নেই। অ্যাপ চালু হওয়ার পর একবার এই কমান্ড চালান — email আর password টার্মিনালে চাইবে (password masked, কোথাও log হবে না):
+
+```bash
+docker compose exec app node scripts/create-admin.js
+```
+
+এরপর `http://YOUR_VPS_IP:3000/admin/login` দিয়ে ঢুকতে পারবেন।
+পরে password বদলাতে চাইলে একই কমান্ড আবার চালান (একই email দিলে password আপডেট হবে)।
 
 ---
 

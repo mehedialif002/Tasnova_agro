@@ -1,5 +1,4 @@
 const { PrismaClient } = require("@prisma/client");
-const bcrypt = require("bcryptjs");
 
 const prisma = new PrismaClient();
 
@@ -15,17 +14,10 @@ async function main() {
     await prisma.product.upsert({ where: { slug: p.slug }, update: {}, create: p });
   }
 
-  const adminEmail = process.env.ADMIN_EMAIL || "admin@agro-landing.com";
-  const adminPassword = process.env.ADMIN_PASSWORD || "changeme123";
-  const hashed = await bcrypt.hash(adminPassword, 10);
-
-  await prisma.admin.upsert({
-    where: { email: adminEmail },
-    update: {},
-    create: { email: adminEmail, password: hashed, name: "Admin" },
-  });
-
-  console.log(`Admin login -> email: ${adminEmail}, password: ${adminPassword}`);
+  // NOTE: Admin is intentionally NOT seeded here.
+  // Create the admin account once with:  node scripts/create-admin.js
+  // (keeps admin credentials out of .env, git, and logs)
+  console.log("Products seeded. Create an admin with: node scripts/create-admin.js");
 }
 
 main().catch((e) => { console.error(e); process.exit(1); }).finally(async () => { await prisma.$disconnect(); });
