@@ -1,0 +1,176 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --ink: #052e16; /* near-black forest — editorial text */
+  --grass: #1c7a45;
+  --accent: #b8862b; /* muted harvest brass, not neon */
+  --paper: #f6f3ea; /* warm paper */
+}
+
+/* ---------- Scroll-snap story engine ---------- */
+html {
+  scroll-behavior: smooth;
+  /* proximity: firmly settles on each panel while scrolling, but never traps
+     the scroll or overrides anchor-link / back-to-top navigation. */
+  scroll-snap-type: y proximity;
+  scroll-padding-top: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-snap-type: none;
+  }
+}
+
+body {
+  @apply bg-[color:var(--paper)] font-body antialiased;
+  color: var(--ink);
+  background-color: #f6f3ea;
+}
+
+.snap-panel {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Visible keyboard focus everywhere */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--grass);
+  outline-offset: 3px;
+}
+
+/* ---------- Reveal system (fly-in + settle) ---------- */
+.reveal {
+  opacity: 0;
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+.reveal-up {
+  transform: translateY(54px);
+}
+.reveal-down {
+  transform: translateY(-54px);
+}
+.reveal-left {
+  transform: translateX(-90px) rotate(-2deg);
+}
+.reveal-right {
+  transform: translateX(90px) rotate(2deg);
+}
+.reveal-zoom {
+  transform: scale(0.8);
+  filter: blur(6px);
+}
+.reveal-blur {
+  filter: blur(14px);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition-duration: 0.01ms !important;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* ---------- Editorial detail utilities ---------- */
+
+/* Kicker rule label */
+.kicker {
+  @apply inline-flex items-center gap-3 font-body text-xs font-semibold uppercase tracking-[0.28em];
+  color: var(--grass);
+}
+.kicker::before {
+  content: "";
+  width: 34px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+/* thin grass underline accent under a word */
+.accent-word {
+  color: var(--grass);
+  position: relative;
+  white-space: nowrap;
+}
+
+/* Giant faint index numeral behind statements */
+.ghost-index {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 800;
+  color: rgba(5, 46, 22, 0.05);
+  line-height: 0.8;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Warm paper grain — subtle, kills the flat "template" feel */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+.leaf-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--grass) 50%, transparent);
+  opacity: 0.5;
+}
+
+/* shimmering CTA sweep */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3.8s linear infinite;
+  pointer-events: none;
+}
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+@keyframes bob {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(7px);
+  }
+}
+.animate-bob {
+  animation: bob 1.8s ease-in-out infinite;
+}
